@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Indian Map</title>
+    <style>
+        /* Adjust the map container size as per your preference */
+        #map {
+            height: 400px;
+        }
+    </style>
+    <!-- Include Leaflet CSS and JavaScript files -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body>
+    <div id="map"></div>
+    <input type="text" id="searchInput" placeholder="Search for a place...">
+    <ul id="placesList">
+        <li onclick="highlightPlace(1)">Delhi</li>
+        <li onclick="highlightPlace(2)">Mumbai</li>
+        <li onclick="highlightPlace(3)">Kolkata</li>
+        <li onclick="highlightPlace(4)">Chennai</li>
+        <li onclick="highlightPlace(5)">Bengaluru</li>
+    </ul>
+    <div id="placeName"></div>
+
+    <script>
+        var map = L.map('map').setView([20.5937, 78.9629], 5); // Set initial map view to India
+
+        // Add the map tile layer (OpenStreetMap)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        var marker;
+
+        function highlightPlace(placeIndex) {
+            const placesList = document.getElementById('placesList');
+            const selectedPlace = placesList.getElementsByTagName('li')[placeIndex - 1].innerText;
+            const placeNameElement = document.getElementById('placeName');
+            placeNameElement.innerText = selectedPlace;
+            placeNameElement.style.display = 'block';
+
+            // Remove the existing marker
+            if (marker) {
+                marker.remove();
+            }
+
+            // Set the coordinates and add a new marker
+            switch (placeIndex) {
+                case 1: // Delhi
+                    marker = L.marker([28.6139, 77.2090]).addTo(map);
+                    break;
+                case 2: // Mumbai
+                    marker = L.marker([19.0760, 72.8777]).addTo(map);
+                    break;
+                case 3: // Kolkata
+                    marker = L.marker([22.5726, 88.3639]).addTo(map);
+                    break;
+                case 4: // Chennai
+                    marker = L.marker([13.0827, 80.2707]).addTo(map);
+                    break;
+                case 5: // Bengaluru
+                    marker = L.marker([12.9716, 77.5946]).addTo(map);
+                    break;
+                default:
+                    break;
+            }
+
+            // Pan the map to the selected place
+            map.panTo(marker.getLatLng());
+        }
+
+        var searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function () {
+            var searchTerm = searchInput.value.toLowerCase();
+
+            // Loop through the places list and check if the search term matches any place
+            for (var i = 0; i < placesList.children.length; i++) {
+                var place = placesList.children[i];
+                var placeName = place.innerText.toLowerCase();
+
+                // If the place name matches the search term, highlight and pan to the place on the map
+                if (placeName.includes(searchTerm)) {
+                    place.style.display = 'block';
+                } else {
+                    place.style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
